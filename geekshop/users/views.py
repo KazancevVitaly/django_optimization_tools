@@ -3,9 +3,11 @@ from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import FormView
-from django.utils.decorators import method_decorator
+from django.core.mail import send_mail
+from django.conf import settings
+# from django.views.generic.edit import CreateView, UpdateView
+# from django.views.generic import FormView
+# from django.utils.decorators import method_decorator
 
 
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
@@ -32,13 +34,27 @@ def login(request):
     return render(request, 'users/login.html', context)
 
 
+def send_verify_mail(user):
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    title = f'Подтверждение учетной записи {user.username}'
+    message = f'Для подтверждения учетной записи {user.username} на портале {settings.DOMAIN_NAME} ' \
+              f'перейдите по ссылке:\n{settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегестрировались!')
-            return HttpResponseRedirect(reverse('users:login'))
+            user = form.save()
+            if send_verify_mail(user):
+                messages.success(request, 'Для завершения регестрации зайдите проверьте сообщение по указанному '
+                                          'Вами e-mail адресу!')
+                print('Сообщение отправлено!')
+                return HttpResponseRedirect(reverse('users:login'))
+            else:
+                print('Ошибка!')
+                return HttpResponseRedirect(reverse('users:login'))
     else:
         form = UserRegisterForm()
     context = {
@@ -46,6 +62,22 @@ def register(request):
         'form': form
     }
     return render(request, 'users/register.html', context)
+
+
+def verify(request, email, activation_key):
+    try:
+        user = User.objects.get(email=email)
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+            return render(request, 'users/verification.html')
+        else:
+            print(f'Ошибка активации пользователя: {user}')
+            return render(request, 'users/verification.html')
+    except Exception as e:
+        print(f'Ошибка активации пользователя: {e.args}')
+        return HttpResponseRedirect(reverse('index'))
 
 
 @login_required()
