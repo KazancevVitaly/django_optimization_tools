@@ -48,8 +48,8 @@ def register(request):
         if form.is_valid():
             user = form.save()
             if send_verify_mail(user):
-                messages.success(request, 'Для завершения регестрации зайдите проверьте сообщение по указанному '
-                                          'Вами e-mail адресу!')
+                messages.success(request, 'Для завершения регистрации пройдите по ссылке, котору мы отправили '
+                                          'Вам на почту!')
                 print('Сообщение отправлено!')
                 return HttpResponseRedirect(reverse('users:login'))
             else:
@@ -95,7 +95,7 @@ def profile(request):
     context = {
         'title': 'GeekShop - Личный кабинет',
         'form': form,
-        'baskets': Basket.objects.filter(user=user)
+        # 'baskets': Basket.objects.filter(user=user)
     }
     return render(request, 'users/profile.html', context)
 
