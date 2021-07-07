@@ -113,7 +113,7 @@ def edit_profile(request):
         profile_form = UserProfileForm(request.POST, instance=request.user.newdatauser)
         if edit_form.is_valid() and profile_form.is_valid():
             edit_form.save()
-            return HttpResponseRedirect (reverse('users:edit'))
+            return HttpResponseRedirect(reverse('users:edit'))
     else:
         edit_form = UserProfileForm(instance=request.user)
         profile_form = UserProfileForm(instance=request.user.newdatauser)
