@@ -1,9 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
 
-import random, hashlib
+import random
+import hashlib
 
-from users.models import User
+from users.models import User, NewDataUser
 
 
 class UserLoginForm(AuthenticationForm):
@@ -84,7 +85,7 @@ class UserProfileForm(UserChangeForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
 
     class Meta:
-        model = User
+        model = NewDataUser
         fields = (
             'username',
             'email',

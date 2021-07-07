@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import transaction
 # from django.views.generic.edit import CreateView, UpdateView
 # from django.views.generic import FormView
 # from django.utils.decorators import method_decorator
@@ -103,6 +104,27 @@ def profile(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
+@transaction.atomic
+def edit_profile(request):
+    if request.method == 'POST':
+        edit_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        profile_form = UserProfileForm(request.POST, instance=request.user.newdatauser)
+        if edit_form.is_valid() and profile_form.is_valid():
+            edit_form.save()
+            return HttpResponseRedirect (reverse('users:edit'))
+    else:
+        edit_form = UserProfileForm(instance=request.user)
+        profile_form = UserProfileForm(instance=request.user.newdatauser)
+
+    context = {
+        'title': 'GeekShop| ваш профиль',
+        'edit_form': edit_form,
+        'profile_form': profile_form
+    }
+
+    return render(request, 'users/edit.html', context)
 
 
 # class GeekShopLogin(LoginView):
