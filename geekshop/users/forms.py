@@ -1,7 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
 
-from users.models import User
+import random
+import hashlib
+
+from users.models import User, NewDataUser
 
 
 class UserLoginForm(AuthenticationForm):
@@ -57,6 +60,16 @@ class UserRegisterForm(UserCreationForm):
             'image'
         )
 
+    def save(self):
+        user = super(UserRegisterForm, self).save()
+
+        user.is_active = False
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:6]
+        user.activation_key = hashlib.sha1((user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+
+        return user
+
 
 class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
@@ -72,7 +85,7 @@ class UserProfileForm(UserChangeForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
 
     class Meta:
-        model = User
+        model = NewDataUser
         fields = (
             'username',
             'email',
