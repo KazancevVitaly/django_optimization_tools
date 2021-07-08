@@ -22,9 +22,12 @@ class User(AbstractUser):
 
 
 class NewDataUser(models.Model):
+    MALE = 'M'
+    FEMALE = 'W'
+
     GENDER_CHOICES = (
-        ('M', 'М'),
-        ('W', 'Ж')
+        (MALE, 'М'),
+        (FEMALE, 'Ж')
     )
 
     user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
