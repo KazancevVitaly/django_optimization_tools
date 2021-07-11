@@ -33,11 +33,21 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'products:index' %}">Каталог <i class="fas fa-shopping-bag"></i> </a>
+                    <a class="nav-link" href="{% url 'products:index' %}" style="margin-left:600px">Каталог <i class="fas fa-shopping-bag"></i> </a>
                 </li>
                 {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        МЕНЮ
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{% url 'users:profile' %}">{{ user.username }} | Личный кабынет</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ordersapp:order_list' %}">Заказы</a></li>
+                        <li><a class="dropdown-item" href="#">Контакты</a></li>
+                    </ul>
+                </div>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:profile' user.id %}">{{ user.username }}
+                    <a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}
                         <i class="fas fa-user-circle"></i>
                     </a>
                 </li>

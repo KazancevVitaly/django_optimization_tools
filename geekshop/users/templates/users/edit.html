@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+    <form action="{% url 'users:edit' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ edit_form.as_p }}
+        {{ profile_form.as_p }}
+        <input class="form-control" type="submit" value="сохранить">
+    </form>
+    <div class="user_avatar"><img src="{% if user.image %} {{ user.image.url }}
+                          {% else %} {% static 'vendor/img/users/default_avatar.jpg' %}
+                          {% endif%}"></div>
+    <div class="form-row mb-2">
+                    <div class="col-lg-12">
+                        <div class="custom-file">
+                            {{ form.image }}
+                            <label class="custom-file-label" for="{{edit_form.image.id_for_label }}">Выберите изображение</label>
+                        </div>
+                    </div>
+                </div>
+    <button class="btn btn-round form-control last">
+        <a href="{% url 'index' %}" class="">
+            на главную
+        </a>
+    </button>
+
+{% endblock %}
