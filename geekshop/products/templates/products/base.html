@@ -42,7 +42,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a class="dropdown-item" href="{% url 'users:profile' %}">{{ user.username }} | Личный кабынет</a></li>
-                        <li><a class="dropdown-item" href="#">Заказы</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ordersapp:order_list' %}">Заказы</a></li>
                         <li><a class="dropdown-item" href="#">Контакты</a></li>
                     </ul>
                 </div>
