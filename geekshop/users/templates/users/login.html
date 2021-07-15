@@ -1,4 +1,5 @@
 {% extends 'users/base.html' %}
+{% load static %}
 {% block content %}
 <div class="col-lg-5">
     {% if messages or form.errors %}
@@ -38,6 +39,11 @@
         </div>
         <div class="card-footer text-center">
             <div class="small"><a href="{% url 'users:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
+            <div class="small">Или зайдите через социальную сеть:</div>
+            <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/" style="font-size:30px">
+                <i class="icon-vk"></i>
+                <!-- <img src="{% static 'vendor/img/VK-Icon_icon-icons.com_52860.png' %}" width="30px" alt=""> -->
+            </a>
         </div>
     </div>
 </div> 

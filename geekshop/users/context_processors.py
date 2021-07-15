@@ -1,0 +1,14 @@
+from baskets.models import Basket
+
+
+def basket(request):
+    print(f'context processor basket works')
+    basket = {}
+    if request.user.is_authenticated:
+        basket = Basket.objects.filter(user=request.user)
+
+    context = {
+        'baskets': basket
+    }
+
+    return context
